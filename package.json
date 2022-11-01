@@ -1,8 +1,8 @@
 {
-  "name": "goit-react-hw-02-phonebook",
+  "name": "goit-react-hw-03-image-finder",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ruslanbabkin01.github.io/goit-react-hw-02-phonebook/",
+  "homepage": "https://ruslanbabkin01.github.io/goit-react-hw-03-image-finder/",
   "dependencies": {
     "@emotion/css": "^11.10.0",
     "@emotion/react": "^11.10.4",
