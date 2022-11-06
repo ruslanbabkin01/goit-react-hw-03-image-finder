@@ -1,60 +1,113 @@
 import React, { Component } from 'react';
-// import { Notify } from 'notiflix/build/notiflix-notify-aio';
-// import { nanoid } from 'nanoid';
-import { ImageGallery, Searchbar, Modal, Loader } from './index';
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import {
+  ImageGallery,
+  Searchbar,
+  Modal,
+  Loader,
+  Notification,
+  Button,
+} from './index';
 import { Container } from './App.styled';
 import { fetchImages } from 'api/pixabayAPI';
 
 export class App extends Component {
   state = {
     images: [],
-    isLoading: false,
-    error: null,
-    query: 'cat',
-    totalImg: '',
-    showModal: false,
-    modalImg: null,
-    currentPage: 1,
+    query: '',
+    totalImages: 0,
+    page: 1,
+    status: 'idle',
+    largeImage: '',
   };
 
-  searchImages() {}
+  handleFormSubmit = query => {
+    this.setState({
+      query,
+      page: 1,
+    });
+  };
 
   onLoadMore = () => {
     this.setState(prevState => ({
-      currentPage: prevState.currentPage + 1,
+      page: prevState.page + 1,
     }));
   };
 
-  async componentDidMount() {
-    const { query, currentPage } = this.state;
-    this.setState({ isLoading: true });
+  onModal = largeImage => {
+    this.setState({ largeImage: largeImage });
+  };
+
+  clearLargeImage = () => {
+    this.setState({ largeImage: '' });
+  };
+
+  async componentDidUpdate(_, prevState) {
+    const { query, page, images } = this.state;
+
+    if (prevState.query === query && prevState.page === page) {
+      return;
+    }
+    this.setState({ status: 'pending' });
 
     try {
-      const response = await fetchImages(query, currentPage);
+      const data = await fetchImages(query, page);
+      if (page === 1) {
+        toast.success(`We find ${data.totalHits} images`, {
+          autoClose: 1000,
+          theme: 'colored',
+        });
+      }
+
+      if (data.hits.length === 0) {
+        return this.setState({ status: 'empty', images: [] });
+      }
+
       this.setState({
-        images: response.data.hits,
+        images: page === 1 ? data.hits : [...images, ...data.hits],
+        totalImages: data.totalHits,
+        status: 'resolved',
       });
     } catch (error) {
-      this.setState({ error });
-    } finally {
-      this.setState({ isLoading: false });
+      this.setState({ status: 'error' });
     }
   }
 
   render() {
-    const { images, isLoading, error } = this.state;
-    const { handleSubmit } = this;
+    const { images, error, totalImages, page, status, largeImage } = this.state;
+    const calcImages = totalImages - page * 12;
 
     return (
       <Container>
-        <Searchbar onSubmit={handleSubmit} />
-        <div>
-          {error && <p>Whoops, something went wrong: {error.message}</p>}
-          {isLoading && <Loader />}
-          {images.length > 0 && <ImageGallery images={images} />}
-        </div>
+        <Searchbar onSubmit={this.handleFormSubmit} />
 
-        {/* <Modal /> */}
+        <ImageGallery images={images} onModal={this.onModal} />
+
+        {status === 'pending' && totalImages === 0 && <Loader />}
+
+        {(status === 'empty' || status === 'idle') && (
+          <Notification message="We didn't find anything" status={status} />
+        )}
+
+        {status === 'error' && (
+          <Notification
+            message="Whoops, something went wrong"
+            status={status}
+            error={error}
+          />
+        )}
+
+        {calcImages > 0 && images.length > 0 && (
+          <Button onLoadMore={this.onLoadMore} status={status} />
+        )}
+
+        {largeImage && (
+          <Modal onClose={this.clearLargeImage}>
+            <img src={largeImage} alt="IMG" />
+          </Modal>
+        )}
+        <ToastContainer />
       </Container>
     );
   }

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import React, { Component } from 'react';
 import {
   Header,
@@ -15,18 +16,27 @@ export class Searchbar extends Component {
   };
 
   handleQueryChange = event => {
-    const { name, value } = event.currentTarget;
-    this.setState({ [name]: value });
+    this.setState({ query: event.currentTarget.value.toLowerCase() });
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state);
-    this.setState({ query: '' });
-
-    if (this.state.query.trim() === '') {
-      return Notify('Insert correct request');
+    const normalizedQuery = this.state.query.trim();
+    if (normalizedQuery === '') {
+      return toast.info('Insert correct request', {
+        position: 'top-right',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
     }
+
+    this.props.onSubmit(normalizedQuery);
+    this.setState({ query: '' });
   };
 
   render() {
@@ -52,6 +62,6 @@ export class Searchbar extends Component {
   }
 }
 
-// Searchbar.propTypes = {
-//   onSubmit: PropTypes.func.isRequired,
-// };
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};

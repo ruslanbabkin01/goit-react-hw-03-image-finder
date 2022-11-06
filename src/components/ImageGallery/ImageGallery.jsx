@@ -2,19 +2,21 @@ import PropTypes from 'prop-types';
 import { ImageList } from './ImageGallery.styled';
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 
-export const ImageGallery = ({ images }) => {
+export const ImageGallery = ({ images, onModal }) => (
   <ImageList>
     {images.map(img => (
       <ImageGalleryItem
         key={img.id}
         smallImage={img.webformatURL}
-        // largeImage={mg.largeImageURL}
+        largeImage={img.largeImageURL}
         tags={img.tags}
+        onModal={onModal}
       />
     ))}
-  </ImageList>;
-};
+  </ImageList>
+);
 
 ImageGallery.prototype = {
   images: PropTypes.array.isRequired,
+  onModal: PropTypes.func.isRequired,
 };

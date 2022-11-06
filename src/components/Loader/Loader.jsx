@@ -1,11 +1,21 @@
-import { RotatingLines } from 'react-content-loader';
+import { ThreeCircles } from 'react-loader-spinner';
+import { LoadContainer } from './Loader.styled';
 
 export const Loader = () => (
-  <RotatingLines
-    strokeColor="grey"
-    strokeWidth="5"
-    animationDuration="0.75"
-    width="96"
-    visible={true}
-  />
+  <LoadContainer>
+    <ThreeCircles
+      height="100"
+      width="100"
+      color="#4fa94d"
+      wrapperStyle={{}}
+      wrapperClass=""
+      visible={true}
+      ariaLabel="three-circles-rotating"
+      outerCircleColor=""
+      innerCircleColor=""
+      middleCircleColor=""
+    />
+  </LoadContainer>
 );
+
+export default Loader;

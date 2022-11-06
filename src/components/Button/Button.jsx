@@ -1,19 +1,18 @@
-import { Btn, ButtonContainer } from './Button.styled';
+import { Btn } from './Button.styled';
 import PropTypes from 'prop-types';
-import { Loader } from '../Loader/Loader';
+import { Loader } from 'components/Loader/Loader';
 
-export const Button = ({ title, onLoadMore, status }) => (
-  <ButtonContainer>
+export const Button = ({ onLoadMore, status }) => (
+  <>
     {status === 'pending' ? (
       <Loader />
     ) : (
-      <Btn onClick={onLoadMore}>{title}</Btn>
+      <Btn onClick={onLoadMore}>Load more</Btn>
     )}
-  </ButtonContainer>
+  </>
 );
 
 Button.propTypes = {
-  title: PropTypes.string.isRequired,
   onLoadMore: PropTypes.func.isRequired,
   status: PropTypes.string.isRequired,
 };
