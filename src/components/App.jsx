@@ -39,7 +39,7 @@ export class App extends Component {
     this.setState({ largeImage: largeImage });
   };
 
-  clearLargeImage = () => {
+  onCloseModal = () => {
     this.setState({ largeImage: '' });
   };
 
@@ -53,9 +53,9 @@ export class App extends Component {
 
     try {
       const data = await fetchImages(query, page);
-      if (page === 1) {
+      if (page === 1 && data.hits.length > 0) {
         toast.success(`We find ${data.totalHits} images`, {
-          autoClose: 1000,
+          autoClose: 1500,
           theme: 'colored',
         });
       }
@@ -71,6 +71,7 @@ export class App extends Component {
       });
     } catch (error) {
       this.setState({ status: 'error' });
+      console.log(error.message);
     }
   }
 
@@ -86,15 +87,21 @@ export class App extends Component {
 
         {status === 'pending' && totalImages === 0 && <Loader />}
 
-        {(status === 'empty' || status === 'idle') && (
-          <Notification message="We didn't find anything" status={status} />
+        {status === 'idle' && (
+          <Notification message="Please find the image" status={status} />
+        )}
+
+        {status === 'empty' && (
+          <Notification
+            message="We didn't find anything, try to enter the correct query"
+            status={status}
+          />
         )}
 
         {status === 'error' && (
           <Notification
-            message="Whoops, something went wrong"
+            message="Whoops, something went wrong, try again"
             status={status}
-            error={error}
           />
         )}
 
@@ -103,7 +110,7 @@ export class App extends Component {
         )}
 
         {largeImage && (
-          <Modal onClose={this.clearLargeImage}>
+          <Modal onClose={this.onCloseModal}>
             <img src={largeImage} alt="IMG" />
           </Modal>
         )}
