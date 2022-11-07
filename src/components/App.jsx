@@ -76,7 +76,7 @@ export class App extends Component {
   }
 
   render() {
-    const { images, error, totalImages, page, status, largeImage } = this.state;
+    const { images, totalImages, page, status, largeImage } = this.state;
     const calcImages = totalImages - page * 12;
 
     return (
