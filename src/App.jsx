@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
 import {
@@ -8,7 +8,7 @@ import {
   Loader,
   Notification,
   Button,
-} from './index';
+} from './components/index';
 import { Container } from './App.styled';
 import { fetchImages } from 'api/pixabayAPI';
 

@@ -10,7 +10,6 @@ export const Btn = styled.button`
   color: #fff;
   border: 0;
   text-decoration: none;
-  cursor: pointer;
   font-family: inherit;
   font-size: 18px;
   line-height: 24px;
